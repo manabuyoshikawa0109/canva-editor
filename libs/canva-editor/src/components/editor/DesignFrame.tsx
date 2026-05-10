@@ -30,7 +30,7 @@ import { isMobile } from 'react-device-detect';
 import PageSettings from 'canva-editor/utils/settings/PageSettings';
 import { dataMapping, pack, unpack } from 'canva-editor/utils/minifier';
 import useDebouncedEffect from 'canva-editor/hooks/useDebouncedEffect';
-// import { domToPng } from 'modern-screenshot'
+import { domToPng } from 'modern-screenshot'
 import { slugify } from 'canva-editor/utils/slugify';
 import { jsPDF } from "jspdf";
 import { useTranslate } from 'canva-editor/contexts/TranslationContext';
@@ -138,8 +138,7 @@ const DesignFrame: FC<DesignFrameProps> = ({ data, onChanges }) => {
   }, [downloadPNGCmd]);
 
   useEffect(() => {
-    if (downloadPNGCmd === -1) return;
-    // Download all pages
+    if (downloadPDFCmd === -1) return;
     if (downloadPDFCmd === 0) {
       handleDownloadPDF();
       return;
@@ -266,34 +265,39 @@ const DesignFrame: FC<DesignFrameProps> = ({ data, onChanges }) => {
     // }
   };
   const handleDownloadPDF = async () => {
-    // const pageProcesses: Promise<string>[] = [];
-    // pages.forEach((_, idx) => {
-    //   const pageContentEl =
-    //     pageRef.current[idx]?.querySelector('.page-content');
-    //   pageProcesses.push(domToPng(pageContentEl as HTMLElement, {
-    //     width: pageSize.width,
-    //     height: pageSize.height
-    //   }));
-    // });
-    // const dataUrls = await Promise.all(pageProcesses);
-    // const doc = new jsPDF({
-    //   unit: "px",
-    // });
-
-    // dataUrls.forEach((dataUrl, idx) => {
-    //   doc.internal.pageSize.width =  pageSize.width;
-    //   doc.internal.pageSize.height = pageSize.height;
-    //   doc.addImage(dataUrl, 'PNG', 0, 0, pageSize.width, pageSize.height, 'p'+idx, 'SLOW');
-    //   if (idx !== dataUrls.length - 1) {
-    //     doc.addPage();
-    //     doc.internal.pageSize.width =  pageSize.width;
-    //     doc.internal.pageSize.height = pageSize.height;
-    //   }
-    // });
-    // const fileName = name ? slugify(name) : 'untitled-design';
-    // doc.save(fileName + '.pdf');
-
-    // actions.fireDownloadPDFCmd(-1); // Reset
+    const orientation = pageSize.width > pageSize.height ? 'landscape' : 'portrait';
+    const pageProcesses: Promise<string>[] = [];
+    pages.forEach((_, idx) => {
+      // BackgroundTemplate（ワークシートHTML）も含む親要素を対象にする
+      const pageEl = pageRef.current[idx]
+        ?.querySelector<HTMLElement>('.page-content')
+        ?.parentElement;
+      if (!pageEl) return;
+      pageProcesses.push(
+        domToPng(pageEl, {
+          width: pageSize.width,
+          height: pageSize.height,
+          // scale(zoom) transformを無視して実寸でキャプチャする
+          style: { transform: 'none', transformOrigin: '0 0' },
+        })
+      );
+    });
+    const dataUrls = await Promise.all(pageProcesses);
+    const doc = new jsPDF({
+      unit: 'px',
+      format: [pageSize.width, pageSize.height],
+      orientation,
+      hotfixes: ['px_scaling'],
+    });
+    dataUrls.forEach((dataUrl, idx) => {
+      if (idx > 0) {
+        doc.addPage([pageSize.width, pageSize.height], orientation);
+      }
+      doc.addImage(dataUrl, 'PNG', 0, 0, pageSize.width, pageSize.height);
+    });
+    const fileName = name ? slugify(name) : 'untitled-design';
+    doc.save(fileName + '.pdf');
+    actions.fireDownloadPDFCmd(-1);
   };
   const { tmpSelected, onSelectStart } = useSelectLayer({
     frameRef: frameRef,

@@ -174,7 +174,7 @@ const HeaderLayout: ForwardRefRenderFunction<
             </div>
             <Button
               onClick={() => {
-                actions.fireDownloadPNGCmd(0);
+                actions.fireDownloadPDFCmd(0);
               }}
             >
               <div css={{ fontSize: 20 }}>
