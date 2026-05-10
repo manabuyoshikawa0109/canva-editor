@@ -180,7 +180,7 @@ const WorksheetSettingsContent: FC<Props> = ({ onClose }) => {
 
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 10 }}>
           <div style={{ flex: 1 }}>
-            <div style={label}>線種</div>
+            <div style={label}>線の種類</div>
             <select
               style={{ ...select, marginBottom: 0 }}
               value={currentLine.style}
