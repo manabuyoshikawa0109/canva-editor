@@ -11,8 +11,8 @@ const defaultData = [
         },
         props: {
           boxSize: {
-            width: 1640,
-            height: 924,
+            width: 820,
+            height: 462,
           },
           position: {
             x: 0,

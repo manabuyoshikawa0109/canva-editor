@@ -111,11 +111,13 @@ const DesignFrame: FC<DesignFrameProps> = ({ data, onChanges }) => {
     actions.setData(serializedData);
 
     setTimeout(() => {
-      const maxInitScale = 0.5;
+      const maxInitScale = 1.0;
+      // キャンバスが画面幅に収まるよう自動縮小し、最大でも100%にする処理
       const initScale =
         ((frameRef?.current?.offsetWidth || 0) - (isMobile ? 32 : 112)) /
         pageSize.width; // Padding 16x2
-      actions.setScale(initScale > maxInitScale ? maxInitScale : initScale);
+      // actions.setScale(initScale > maxInitScale ? maxInitScale : initScale);
+      actions.setScale(maxInitScale)
     }, 16);
   }, [data, actions]);
 
