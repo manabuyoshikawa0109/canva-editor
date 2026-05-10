@@ -4,7 +4,7 @@ import ShapeContent from './sidebar/ShapeContent';
 import ImageContent from './sidebar/ImageContent';
 import TemplateContent from './sidebar/TemplateContent';
 import FrameContent from './sidebar/FrameContent';
-import MaterialContent from './sidebar/MaterialContent';
+import WorksheetSettingsContent from './sidebar/WorksheetSettingsContent';
 import { useEditor } from 'canva-editor/hooks';
 
 // Icons
@@ -40,11 +40,23 @@ const FABButton = styled('button')`
   vertical-align: middle;
 `;
 
+const isWorksheetPath = window.location.pathname === '/english/worksheet';
+
 const Sidebar: FC<{ version: string }> = ({ version }) => {
   const { actions, state } = useEditor();
   const isMobile = useMobileDetect();
   const t = useTranslate();
+
+  const worksheetTab = isWorksheetPath
+    ? [{
+        name: 'WorksheetSettings',
+        displayName: 'Worksheet',
+        icon: <span css={{ display: 'flex', '& > svg': { width: 24, height: 24 } }}><DocumentIcon /></span>,
+      }]
+    : [];
+
   const tabs = [
+    ...worksheetTab,
     {
       name: 'Template',
       displayName: t('sidebar.template', 'Template'),
@@ -69,11 +81,6 @@ const Sidebar: FC<{ version: string }> = ({ version }) => {
       name: 'Frame',
       displayName: t('sidebar.frame', 'Frame'),
       icon: <FrameIcon />,
-    },
-    {
-      name: 'Materials',
-      displayName: '教材',
-      icon: <DocumentIcon />,
     },
   ];
 
@@ -124,9 +131,9 @@ const Sidebar: FC<{ version: string }> = ({ version }) => {
             }}
           />
         );
-      case 'Materials':
+      case 'WorksheetSettings':
         return (
-          <MaterialContent
+          <WorksheetSettingsContent
             onClose={() => {
               actions.setSidebarTab();
               actions.setSidebar();

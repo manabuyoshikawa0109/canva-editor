@@ -15,7 +15,19 @@ import {
   TranslationContext,
   createTranslateFunction,
 } from '../../contexts/TranslationContext';
-import { WorksheetContentProvider } from '../../contexts/WorksheetContentContext';
+import { WorksheetContentProvider, useWorksheetContent } from '../../contexts/WorksheetContentContext';
+
+const WorksheetInitializer: FC = () => {
+  const { setPageTemplate } = useWorksheetContent();
+
+  useEffect(() => {
+    if (window.location.pathname === '/english/worksheet') {
+      setPageTemplate(0, 'english-worksheet');
+    }
+  }, []);
+
+  return null;
+};
 
 export type EditorProps = {
   data?: {
@@ -71,6 +83,7 @@ const CanvaEditor: FC<PropsWithChildren<EditorProps>> = ({
     <WorksheetContentProvider>
     <TranslationContext.Provider value={translationContextValue}>
       <EditorContext.Provider value={{ config, getState, actions, query }}>
+      <WorksheetInitializer />
       {!isPreview ? (
         <div
           css={{

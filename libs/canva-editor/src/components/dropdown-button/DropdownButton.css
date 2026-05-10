@@ -69,6 +69,13 @@
 .menu-item:hover>button {
     background-color: rgba(64, 87, 109, .07);
 }
+.menu-item-selected>button {
+    background-color: #EEF2FF;
+    color: #6366F1;
+}
+.menu-item-selected:hover>button {
+    background-color: #E0E7FF;
+}
 .menu-item:hover>button p.hint {
     display: block;
 }

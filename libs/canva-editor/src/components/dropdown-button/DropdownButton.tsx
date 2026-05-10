@@ -12,6 +12,7 @@ export type DropdownMenuItem = {
   items?: DropdownMenuItem[];
   disabled?: boolean;
   hint?: string;
+  selected?: boolean;
 };
 interface Props {
   text: string | ReactNode;
@@ -65,7 +66,7 @@ const DropdownButton: FC<Props> = ({ text, header, items }) => {
 
     const menuItemClassName = `menu-item ${
       item.type === 'submenu' ? 'with-submenu' : ''
-    }`;
+    } ${item.selected ? 'menu-item-selected' : ''}`;
 
     const shouldRenderSubmenu = (idx: number) => {
       if (isMobile) {

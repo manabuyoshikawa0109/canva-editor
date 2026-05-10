@@ -3,6 +3,30 @@ import React from 'react';
 import { data } from './devData';
 // import { data } from './sampleData';
 import { useState } from 'react';
+
+const A4_CANVAS_DATA = [
+  {
+    name: '',
+    notes: '',
+    layers: {
+      ROOT: {
+        type: { resolvedName: 'RootLayer' },
+        props: {
+          boxSize: { width: 794, height: 1123 },
+          position: { x: 0, y: 0 },
+          rotate: 0,
+          color: 'transparent',
+          image: null,
+        },
+        locked: false,
+        child: [],
+        parent: null,
+      },
+    },
+  },
+];
+
+const isWorksheetPath = window.location.pathname === '/english/worksheet';
 // Integrate with mock-api: make mock-up
 // const editorConfig: EditorConfig = {
 //   apis: {
@@ -188,7 +212,7 @@ const Editor = () => {
     <CanvaEditor
       data={{
         name,
-        editorConfig: data,
+        editorConfig: isWorksheetPath ? A4_CANVAS_DATA : data,
       }}
       config={editorConfig}
       saving={saving}
